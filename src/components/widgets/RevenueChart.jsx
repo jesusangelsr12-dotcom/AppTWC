@@ -41,8 +41,8 @@ export function RevenueChart({ data, title = 'Ingresos' }) {
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="h-72 min-h-[288px]">
+        <ResponsiveContainer width="100%" height="100%" minWidth={300}>
           <AreaChart
             data={data}
             margin={{ top: 10, right: 10, left: 0, bottom: 0 }}

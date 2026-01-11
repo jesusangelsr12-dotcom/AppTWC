@@ -83,8 +83,8 @@ export function Reports() {
         <CardHeader>
           <CardTitle>Ingresos Diarios (Últimos 30 días)</CardTitle>
         </CardHeader>
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-72 min-h-[288px]">
+          <ResponsiveContainer width="100%" height="100%" minWidth={300}>
             <BarChart data={dailyRevenue} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -118,8 +118,8 @@ export function Reports() {
           <CardHeader>
             <CardTitle>Métodos de Pago</CardTitle>
           </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-64 min-h-[256px]">
+            <ResponsiveContainer width="100%" height="100%" minWidth={250}>
               <PieChart>
                 <Pie
                   data={paymentMethodsData}
