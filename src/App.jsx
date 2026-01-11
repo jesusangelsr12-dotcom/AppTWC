@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './context/ThemeContext';
+import { DataProvider } from './context/DataContext';
 import { Layout } from './components/layout/Layout';
 import {
   Dashboard,
@@ -9,6 +10,8 @@ import {
   Services,
   Products,
   Payments,
+  Expenses,
+  Finances,
   Reports,
   Settings,
 } from './pages';
@@ -29,21 +32,25 @@ const pages = {
   services: Services,
   products: Products,
   payments: Payments,
+  expenses: Expenses,
+  finances: Finances,
   reports: Reports,
   settings: Settings,
 };
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [currentPage, setCurrentPage] = useState('appointments');
 
   const PageComponent = pages[currentPage] || Dashboard;
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
-          <PageComponent />
-        </Layout>
+        <DataProvider>
+          <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
+            <PageComponent />
+          </Layout>
+        </DataProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

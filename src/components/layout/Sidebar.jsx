@@ -11,6 +11,8 @@ import {
   Sun,
   ChevronLeft,
   ChevronRight,
+  Receipt,
+  Wallet,
 } from 'lucide-react';
 import { cn } from '../../utils/helpers';
 import { useTheme } from '../../context/ThemeContext';
@@ -24,15 +26,20 @@ const NAV_ICONS = {
   CreditCard,
   BarChart3,
   Settings,
+  Receipt,
+  Wallet,
 };
 
+// Navegación reordenada: Citas, Clientes, Dashboard, Productos, Servicios, etc.
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard', path: '/' },
   { id: 'appointments', label: 'Citas', icon: 'Calendar', path: '/citas' },
   { id: 'clients', label: 'Clientes', icon: 'Users', path: '/clientes' },
-  { id: 'services', label: 'Servicios', icon: 'Scissors', path: '/servicios' },
+  { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard', path: '/' },
   { id: 'products', label: 'Productos', icon: 'Package', path: '/productos' },
+  { id: 'services', label: 'Servicios', icon: 'Scissors', path: '/servicios' },
   { id: 'payments', label: 'Pagos', icon: 'CreditCard', path: '/pagos' },
+  { id: 'expenses', label: 'Gastos', icon: 'Receipt', path: '/gastos' },
+  { id: 'finances', label: 'Finanzas', icon: 'Wallet', path: '/finanzas' },
   { id: 'reports', label: 'Reportes', icon: 'BarChart3', path: '/reportes' },
   { id: 'settings', label: 'Configuración', icon: 'Settings', path: '/configuracion' },
 ];

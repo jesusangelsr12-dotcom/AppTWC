@@ -4,5 +4,7 @@ export { Clients } from './Clients';
 export { Services } from './Services';
 export { Products } from './Products';
 export { Payments } from './Payments';
+export { Expenses } from './Expenses';
+export { Finances } from './Finances';
 export { Reports } from './Reports';
 export { Settings } from './Settings';
