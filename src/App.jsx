@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { DataProvider } from './context/DataContext';
+import { ToastProvider } from './context/ToastContext';
 import { Layout } from './components/layout/Layout';
 import {
   Dashboard,
@@ -25,31 +26,31 @@ const queryClient = new QueryClient({
   },
 });
 
-const pages = {
-  dashboard: Dashboard,
-  appointments: Appointments,
-  clients: Clients,
-  services: Services,
-  products: Products,
-  payments: Payments,
-  expenses: Expenses,
-  finances: Finances,
-  reports: Reports,
-  settings: Settings,
-};
-
 function App() {
-  const [currentPage, setCurrentPage] = useState('appointments');
-
-  const PageComponent = pages[currentPage] || Dashboard;
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <DataProvider>
-          <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
-            <PageComponent />
-          </Layout>
+          <ToastProvider>
+            <BrowserRouter>
+              <Layout>
+              <Routes>
+                <Route path="/" element={<Navigate to="/citas" replace />} />
+                <Route path="/citas" element={<Appointments />} />
+                <Route path="/clientes" element={<Clients />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/productos" element={<Products />} />
+                <Route path="/servicios" element={<Services />} />
+                <Route path="/pagos" element={<Payments />} />
+                <Route path="/gastos" element={<Expenses />} />
+                <Route path="/finanzas" element={<Finances />} />
+                <Route path="/reportes" element={<Reports />} />
+                <Route path="/configuracion" element={<Settings />} />
+                <Route path="*" element={<Navigate to="/citas" replace />} />
+              </Routes>
+              </Layout>
+            </BrowserRouter>
+          </ToastProvider>
         </DataProvider>
       </ThemeProvider>
     </QueryClientProvider>

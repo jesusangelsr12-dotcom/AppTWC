@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Calendar,
@@ -34,7 +35,7 @@ const NAV_ICONS = {
 const navItems = [
   { id: 'appointments', label: 'Citas', icon: 'Calendar', path: '/citas' },
   { id: 'clients', label: 'Clientes', icon: 'Users', path: '/clientes' },
-  { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard', path: '/' },
+  { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard', path: '/dashboard' },
   { id: 'products', label: 'Productos', icon: 'Package', path: '/productos' },
   { id: 'services', label: 'Servicios', icon: 'Scissors', path: '/servicios' },
   { id: 'payments', label: 'Pagos', icon: 'CreditCard', path: '/pagos' },
@@ -44,7 +45,7 @@ const navItems = [
   { id: 'settings', label: 'Configuración', icon: 'Settings', path: '/configuracion' },
 ];
 
-export function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse }) {
+export function Sidebar({ currentPath, isCollapsed, onToggleCollapse }) {
   const { isDark, toggleTheme } = useTheme();
 
   return (
@@ -77,13 +78,12 @@ export function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse
         <ul className="space-y-1 px-2">
           {navItems.map((item) => {
             const Icon = NAV_ICONS[item.icon];
-            const isActive = currentPage === item.id;
 
             return (
               <li key={item.id}>
-                <button
-                  onClick={() => onNavigate(item.id)}
-                  className={cn(
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) => cn(
                     'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200',
                     isActive
                       ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
@@ -92,9 +92,13 @@ export function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse
                   )}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <Icon className={cn('w-5 h-5 flex-shrink-0', isActive && 'text-primary-500 dark:text-primary-400')} />
-                  {!isCollapsed && <span className="font-medium">{item.label}</span>}
-                </button>
+                  {({ isActive }) => (
+                    <>
+                      <Icon className={cn('w-5 h-5 flex-shrink-0', isActive && 'text-primary-500 dark:text-primary-400')} />
+                      {!isCollapsed && <span className="font-medium">{item.label}</span>}
+                    </>
+                  )}
+                </NavLink>
               </li>
             );
           })}

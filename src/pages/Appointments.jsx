@@ -10,6 +10,7 @@ import { Avatar } from '../components/common/Avatar';
 import { Modal } from '../components/common/Modal';
 import { Input, Select, Textarea } from '../components/common/Input';
 import { useData } from '../context/DataContext';
+import { useToast } from '../context/ToastContext';
 import { formatDate, formatTime, formatCurrency, cn } from '../utils/helpers';
 import { CARD_COMMISSION_RATE } from '../utils/constants';
 
@@ -42,6 +43,7 @@ export function Appointments() {
     processPayment,
     addClient,
   } = useData();
+  const { toast } = useToast();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
@@ -110,7 +112,10 @@ export function Appointments() {
     const service = services.find(s => s.id === newAppointment.serviceId);
     const stylist = stylists.find(s => s.id === newAppointment.stylistId);
 
-    if (!client || !service || !stylist) return;
+    if (!client || !service || !stylist) {
+      toast.error('Error', 'Por favor completa todos los campos');
+      return;
+    }
 
     const dateTime = new Date(`${newAppointment.date}T${newAppointment.time}`);
 
@@ -126,6 +131,8 @@ export function Appointments() {
       totalAmount: service.price,
       notes: newAppointment.notes,
     });
+
+    toast.success('Cita creada', `Cita para ${client.fullName} agendada exitosamente`);
 
     setNewAppointment({
       clientId: '',
@@ -182,7 +189,10 @@ export function Appointments() {
         account: m.method === 'cash' ? 'cash' : m.method === 'card' ? 'hey_banco' : 'bbva',
       }));
 
-    if (methods.length === 0) return;
+    if (methods.length === 0) {
+      toast.error('Error', 'Por favor ingresa al menos un método de pago');
+      return;
+    }
 
     processPayment(selectedAppointment.id, {
       methods,
@@ -190,6 +200,8 @@ export function Appointments() {
       discount: parseFloat(paymentData.discount) || 0,
       notes: paymentData.notes,
     });
+
+    toast.success('Pago registrado', `Se cobró ${formatCurrency(totalPayment.net)} correctamente`);
 
     setShowPaymentModal(false);
     setSelectedAppointment(null);
@@ -212,11 +224,13 @@ export function Appointments() {
   const handleDeleteAppointment = (apt) => {
     if (confirm('¿Estás seguro de eliminar esta cita?')) {
       deleteAppointment(apt.id);
+      toast.info('Cita eliminada', 'La cita ha sido eliminada');
     }
   };
 
   const handleStatusChange = (apt, newStatus) => {
     updateAppointment(apt.id, { status: newStatus });
+    toast.success('Estado actualizado', `Cita marcada como ${statusConfig[newStatus]?.label || newStatus}`);
   };
 
   const handleCreateClient = () => {
@@ -227,6 +241,8 @@ export function Appointments() {
       phone: newClient.phone.trim(),
       email: newClient.email.trim(),
     });
+
+    toast.success('Cliente creado', `${client.fullName} agregada a clientes`);
 
     // Seleccionar el nuevo cliente automáticamente
     setNewAppointment(prev => ({ ...prev, clientId: client.id }));
