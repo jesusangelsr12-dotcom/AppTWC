@@ -60,7 +60,7 @@ export const PAYMENT_METHODS_LABELS = {
 };
 
 // Comisión por pago con tarjeta
-export const CARD_COMMISSION_RATE = 0.035; // 3.5%
+export const CARD_COMMISSION_RATE = 0.043; // 4.3%
 
 // Cuentas bancarias / Fuentes de dinero
 export const ACCOUNTS = {

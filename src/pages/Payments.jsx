@@ -100,7 +100,7 @@ export function Payments() {
       <div className="flex items-center gap-2 p-3 rounded-lg bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200">
         <AlertCircle className="w-5 h-5 flex-shrink-0" />
         <p className="text-sm">
-          Los pagos con tarjeta tienen una comisión del <strong>3.5%</strong> que se descuenta automáticamente.
+          Los pagos con tarjeta tienen una comisión del <strong>4.3%</strong> que se descuenta automáticamente.
           El dinero de tarjeta va a <strong>Hey Banco</strong> y las transferencias a <strong>BBVA</strong>.
         </p>
       </div>

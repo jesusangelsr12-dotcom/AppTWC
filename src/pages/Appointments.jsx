@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   Plus, Search, Calendar as CalendarIcon, Clock, Phone,
-  CreditCard, Banknote, ArrowRightLeft, X, Check, Trash2
+  CreditCard, Banknote, ArrowRightLeft, X, Check, Trash2, UserPlus
 } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
@@ -40,6 +40,7 @@ export function Appointments() {
     updateAppointment,
     deleteAppointment,
     processPayment,
+    addClient,
   } = useData();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,6 +48,7 @@ export function Appointments() {
   const [showNewModal, setShowNewModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [showNewClientForm, setShowNewClientForm] = useState(false);
 
   // Form para nueva cita
   const [newAppointment, setNewAppointment] = useState({
@@ -56,6 +58,13 @@ export function Appointments() {
     date: new Date().toISOString().split('T')[0],
     time: '10:00',
     notes: '',
+  });
+
+  // Form para nueva cliente
+  const [newClient, setNewClient] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
   });
 
   // Form para pago
@@ -210,6 +219,21 @@ export function Appointments() {
     updateAppointment(apt.id, { status: newStatus });
   };
 
+  const handleCreateClient = () => {
+    if (!newClient.fullName.trim()) return;
+
+    const client = addClient({
+      fullName: newClient.fullName.trim(),
+      phone: newClient.phone.trim(),
+      email: newClient.email.trim(),
+    });
+
+    // Seleccionar el nuevo cliente automáticamente
+    setNewAppointment(prev => ({ ...prev, clientId: client.id }));
+    setNewClient({ fullName: '', phone: '', email: '' });
+    setShowNewClientForm(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -349,12 +373,12 @@ export function Appointments() {
       {/* Modal Nueva Cita */}
       <Modal
         isOpen={showNewModal}
-        onClose={() => setShowNewModal(false)}
+        onClose={() => { setShowNewModal(false); setShowNewClientForm(false); }}
         title="Nueva Cita"
         size="md"
         footer={
           <>
-            <Button variant="outline" onClick={() => setShowNewModal(false)}>
+            <Button variant="outline" onClick={() => { setShowNewModal(false); setShowNewClientForm(false); }}>
               Cancelar
             </Button>
             <Button onClick={handleCreateAppointment}>
@@ -364,13 +388,70 @@ export function Appointments() {
         }
       >
         <form onSubmit={handleCreateAppointment} className="space-y-4">
-          <Select
-            label="Cliente"
-            value={newAppointment.clientId}
-            onChange={(e) => setNewAppointment({ ...newAppointment, clientId: e.target.value })}
-            options={clients.map(c => ({ value: c.id, label: c.fullName }))}
-            placeholder="Seleccionar cliente..."
-          />
+          {/* Cliente Selection or New Client Form */}
+          {!showNewClientForm ? (
+            <div>
+              <Select
+                label="Cliente"
+                value={newAppointment.clientId}
+                onChange={(e) => setNewAppointment({ ...newAppointment, clientId: e.target.value })}
+                options={clients.map(c => ({ value: c.id, label: c.fullName }))}
+                placeholder="Seleccionar cliente..."
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewClientForm(true)}
+                className="mt-2 flex items-center gap-1 text-sm text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                <UserPlus className="w-4 h-4" />
+                Nueva Cliente
+              </button>
+            </div>
+          ) : (
+            <div className="p-4 rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20">
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-medium text-gray-900 dark:text-white">Nueva Cliente</span>
+                <button
+                  type="button"
+                  onClick={() => setShowNewClientForm(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <Input
+                  label="Nombre completo"
+                  value={newClient.fullName}
+                  onChange={(e) => setNewClient({ ...newClient, fullName: e.target.value })}
+                  placeholder="Ej: María García"
+                  required
+                />
+                <Input
+                  label="Teléfono"
+                  value={newClient.phone}
+                  onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
+                  placeholder="Ej: 55 1234 5678"
+                />
+                <Input
+                  label="Email (opcional)"
+                  type="email"
+                  value={newClient.email}
+                  onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
+                  placeholder="email@ejemplo.com"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleCreateClient}
+                  disabled={!newClient.fullName.trim()}
+                >
+                  <Check className="w-4 h-4 mr-1" />
+                  Guardar Cliente
+                </Button>
+              </div>
+            </div>
+          )}
 
           <Select
             label="Servicio"
@@ -518,7 +599,7 @@ export function Appointments() {
               </div>
               {totalPayment.commission > 0 && (
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="text-danger-600 dark:text-danger-400">Comisión tarjeta (3.5%):</span>
+                  <span className="text-danger-600 dark:text-danger-400">Comisión tarjeta (4.3%):</span>
                   <span className="text-danger-600 dark:text-danger-400">-{formatCurrency(totalPayment.commission)}</span>
                 </div>
               )}
